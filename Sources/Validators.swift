@@ -222,11 +222,11 @@ func validatePattern(_ pattern: String) -> (_ value: Any) -> ValidationResult {
 
 // MARK: Numerical
 
-func validateMultipleOf(_ number: Double) -> (_ value: Any) -> ValidationResult {
+func validateMultipleOf(_ number: NSNumber) -> (_ value: Any) -> ValidationResult {
   return { value in
-    if number > 0.0 {
-      if let value = value as? Double {
-        let result = value / number
+    if number.doubleValue > 0.0 {
+      if let value = value as? NSNumber {
+        let result = value.doubleValue / number.doubleValue
         if result != floor(result) {
           return .invalid(["\(value) is not a multiple of \(number)"])
         }
@@ -237,16 +237,16 @@ func validateMultipleOf(_ number: Double) -> (_ value: Any) -> ValidationResult 
   }
 }
 
-func validateNumericLength(_ length: Double, comparitor: @escaping ((Double, Double) -> (Bool)), exclusiveComparitor: @escaping ((Double, Double) -> (Bool)), exclusive: Bool?, error: String) -> (_ value: Any) -> ValidationResult {
+func validateNumericLength(_ length: NSNumber, comparitor: @escaping ((Double, Double) -> (Bool)), exclusiveComparitor: @escaping ((Double, Double) -> (Bool)), exclusive: Bool?, error: String) -> (_ value: Any) -> ValidationResult {
   return { value in
-    if let value = value as? Double {
+    if let value = value as? NSNumber {
       if exclusive ?? false {
-        if !exclusiveComparitor(value, length) {
+        if !exclusiveComparitor(value.doubleValue, length.doubleValue) {
           return .invalid([error])
         }
       }
 
-      if !comparitor(value, length) {
+      if !comparitor(value.doubleValue, length.doubleValue) {
         return .invalid([error])
       }
     }

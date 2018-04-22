@@ -164,15 +164,15 @@ func validators(_ root: Schema) -> (_ schema: [String:Any]) -> [Validator] {
 
     // Numerical
 
-    if let multipleOf = schema["multipleOf"] as? Double {
+    if let multipleOf = schema["multipleOf"] as? NSNumber {
       validators.append(validateMultipleOf(multipleOf))
     }
 
-    if let minimum = schema["minimum"] as? Double {
+    if let minimum = schema["minimum"] as? NSNumber {
       validators.append(validateNumericLength(minimum, comparitor: >=, exclusiveComparitor: >, exclusive: schema["exclusiveMinimum"] as? Bool, error: "Value is lower than minimum value of \(minimum)"))
     }
 
-    if let maximum = schema["maximum"] as? Double {
+    if let maximum = schema["maximum"] as? NSNumber {
       validators.append(validateNumericLength(maximum, comparitor: <=, exclusiveComparitor: <, exclusive: schema["exclusiveMaximum"] as? Bool, error: "Value exceeds maximum value of \(maximum)"))
     }
 
