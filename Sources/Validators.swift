@@ -109,7 +109,7 @@ func validateType(_ type: String) -> (_ value: Any, _ path: String) -> Validatio
       break
     }
 
-    return .invalid(["\n\(path): '\(value)' is not of type '\(type)'"])
+    return .invalid(["\(path): '\(value)' is not of type '\(type)'"])
   }
 }
 
@@ -144,7 +144,7 @@ func anyOf(_ validators:[Validator], error:String? = nil) -> (_ value: Any, _ pa
       return .invalid([error])
     }
 
-    return .invalid(["\(value) does not meet anyOf validation rules."])
+    return .invalid(["\(path): \(value) does not meet anyOf validation rules."])
   }
 }
 
@@ -157,7 +157,7 @@ func oneOf(_ validators: [Validator]) -> (_ value: Any, _ path: String) -> Valid
       return .valid
     }
 
-    return .invalid(["\(validValidators) validates instead `oneOf`."])
+    return .invalid(["\(path): \(validValidators) validates instead `oneOf`."])
   }
 }
 
@@ -165,7 +165,7 @@ func oneOf(_ validators: [Validator]) -> (_ value: Any, _ path: String) -> Valid
 func not(_ validator: @escaping Validator) -> (_ value: Any, _ path: String) -> ValidationResult {
   return { value, path in
     if validator(value, path).valid {
-      return .invalid(["'\(value)' does not match 'not' validation."])
+      return .invalid(["\(path): '\(value)' does not match 'not' validation."])
     }
 
     return .valid
@@ -184,7 +184,7 @@ func validateEnum(_ values: [Any]) -> (_ value: Any, _ path: String) -> Validati
       return .valid
     }
 
-    return .invalid(["'\(value)' is not a valid enumeration value of '\(values)'"])
+    return .invalid(["\(path): '\(value)' is not a valid enumeration value of '\(values)'"])
   }
 }
 
@@ -209,10 +209,10 @@ func validatePattern(_ pattern: String) -> (_ value: Any, _ path: String) -> Val
       if let expression = expression {
         let range = NSMakeRange(0, value.count)
         if expression.matches(in: value, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: range).count == 0 {
-          return .invalid(["'\(value)' does not match pattern: '\(pattern)'"])
+          return .invalid(["\(path): '\(value)' does not match pattern: '\(pattern)'"])
         }
       } else {
-        return .invalid(["[Schema] Regex pattern '\(pattern)' is not valid"])
+        return .invalid(["\(path): [Schema] Regex pattern '\(pattern)' is not valid"])
       }
     }
 
@@ -228,7 +228,7 @@ func validateMultipleOf(_ number: NSNumber) -> (_ value: Any, _ path: String) ->
       if let value = value as? NSNumber {
         let result = value.doubleValue / number.doubleValue
         if result != floor(result) {
-          return .invalid(["\(value) is not a multiple of \(number)"])
+          return .invalid(["\(path): \(value) is not a multiple of \(number)"])
         }
       }
     }
@@ -289,7 +289,7 @@ func validateUniqueItems(_ value: Any, _ path: String) -> ValidationResult {
       return .valid
     }
 
-    return .invalid(["\(value) does not have unique items"])
+    return .invalid(["\(path): \(value) does not have unique items"])
   }
 
   return .valid
@@ -316,7 +316,7 @@ func validateRequired(_ required: [String]) -> (_ value: Any, _ path: String)  -
         return .valid
       }
 
-      return .invalid(["Required properties are missing '\(required)'"])
+      return .invalid(["\(path): Required properties are missing '\(required)'"])
     }
 
     return .valid
@@ -350,7 +350,7 @@ func validateProperties(_ properties: [String:Validator]?, patternProperties: [S
             allKeys.addObjects(from: Array(keys))
             results += keys.map { key in validator(value[key]!, "") }
           } catch {
-            return .invalid(["[Schema] '\(pattern)' is not a valid regex pattern for patternProperties"])
+            return .invalid(["\(path): [Schema] '\(pattern)' is not a valid regex pattern for patternProperties"])
           }
         }
       }
@@ -405,7 +405,7 @@ func validateIPv4(_ value:Any, _ path: String) -> ValidationResult {
       }
     }
 
-    return .invalid(["'\(ipv4)' is not valid IPv4 address."])
+    return .invalid(["\(path): '\(ipv4)' is not valid IPv4 address."])
   }
 
   return .valid
@@ -418,7 +418,7 @@ func validateIPv6(_ value:Any, _ path: String) -> ValidationResult {
       return .valid
     }
 
-    return .invalid(["'\(ipv6)' is not valid IPv6 address."])
+    return .invalid(["\(path): '\(ipv6)' is not valid IPv6 address."])
   }
 
   return .valid
@@ -438,7 +438,7 @@ func validateURI(_ value:Any, _ path: String) -> ValidationResult {
       }
     }
 
-    return .invalid(["'\(uri)' is not a valid URI."])
+    return .invalid(["\(path): '\(uri)' is not a valid URI."])
   }
 
   return .valid
